@@ -1,12 +1,12 @@
 {
-  "projectId": "cup-n-cake",
-  "appId": "1:827140351390:web:7038d98801944ab3f1628f",
-  "apiKey": "AIzaSyAejwSpFE5yGm1_D_t0VlNmW6FVwlfGMDU",
-  "authDomain": "cup-n-cake.firebaseapp.com",
-  "firestoreDatabaseId": "(default)",
-  "storageBucket": "cup-n-cake.firebasestorage.app",
-  "messagingSenderId": "827140351390",
+  "projectId": "synthetic-volt-svd6f",
+  "appId": "1:753299230697:web:51af9d19d53bb1b2580578",
+  "apiKey": "AIzaSyA1N0S5aBPdFzuxjRISh_O-KCyP5VVpgAo",
+  "authDomain": "synthetic-volt-svd6f.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-thecupncakefacto-3e9ea780-e48b-4f0d-8353-9817f7a78308",
+  "storageBucket": "synthetic-volt-svd6f.firebasestorage.app",
+  "messagingSenderId": "753299230697",
   "measurementId": "",
-  "oAuthClientId": "",
+  "oAuthClientId": "753299230697-pin9f8ee9ld3c7k0632fsp4f61ac053f.apps.googleusercontent.com",
   "recaptchaSiteKey": ""
 }

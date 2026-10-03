@@ -1,0 +1,6 @@
+{
+  "name": "The CUPnCAKE Factory | Cakes & Bakery in Gurugram",
+  "description": "Discover cakes, cupcakes and custom celebration cakes from The CUPnCAKE Factory in Gurugram. Enquire and order through WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

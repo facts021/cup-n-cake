@@ -1,0 +1,133 @@
+{
+  "entities": {
+    "Enquiry": {
+      "title": "Enquiry",
+      "description": "Customer enquiry submitted for cakes or baked products.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the enquiry.",
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the customer.",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        "phone": {
+          "type": "string",
+          "description": "Contact or WhatsApp phone number.",
+          "maxLength": 25,
+          "minLength": 5
+        },
+        "occasion": {
+          "type": "string",
+          "description": "Occasion for the cake.",
+          "maxLength": 100
+        },
+        "requirement": {
+          "type": "string",
+          "description": "Details about the cake or bakery requirement.",
+          "maxLength": 1000,
+          "minLength": 1
+        },
+        "preferredDate": {
+          "type": "string",
+          "description": "Target delivery or celebration date.",
+          "maxLength": 50
+        },
+        "message": {
+          "type": "string",
+          "description": "Additional notes, flavor preferences, or dietary requirements.",
+          "maxLength": 2000
+        },
+        "source": {
+          "type": "string",
+          "description": "Submission source channel.",
+          "enum": ["contact_form", "custom_cake_planner", "quick_enquiry"]
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the enquiry.",
+          "enum": ["pending", "contacted", "confirmed", "completed"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp when the enquiry was received."
+        }
+      },
+      "required": ["name", "phone", "requirement", "createdAt"]
+    },
+    "CustomCakeRequest": {
+      "title": "CustomCakeRequest",
+      "description": "Bespoke custom cake design and flavor specification from customer.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the custom cake request.",
+          "maxLength": 128
+        },
+        "occasion": {
+          "type": "string",
+          "description": "Occasion name.",
+          "maxLength": 100
+        },
+        "size": {
+          "type": "string",
+          "description": "Desired cake weight or tier count.",
+          "maxLength": 100
+        },
+        "flavor": {
+          "type": "string",
+          "description": "Desired cake sponge and cream flavor.",
+          "maxLength": 100
+        },
+        "deliveryDate": {
+          "type": "string",
+          "description": "Requested delivery or pickup date.",
+          "maxLength": 50
+        },
+        "customTheme": {
+          "type": "string",
+          "description": "Theme, colors, edible toppers, or message on cake.",
+          "maxLength": 1000
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Name of the customer.",
+          "maxLength": 100
+        },
+        "customerPhone": {
+          "type": "string",
+          "description": "Customer phone number.",
+          "maxLength": 25
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the custom cake request.",
+          "enum": ["new", "quote_sent", "in_baking", "completed"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the request was recorded."
+        }
+      },
+      "required": ["occasion", "size", "flavor", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/enquiries/{enquiryId}": {
+      "schema": "Enquiry",
+      "description": "Stores general customer enquiries and cake requirements."
+    },
+    "/custom_cake_requests/{requestId}": {
+      "schema": "CustomCakeRequest",
+      "description": "Stores custom cake planner specifications."
+    }
+  }
+}

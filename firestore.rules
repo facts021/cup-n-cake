@@ -1,0 +1,94 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email in ['cupncake@gmail.com', 'factsunlimited746@gmail.com']) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Validation helper for Enquiries
+    function isValidEnquiry(data) {
+      return data.keys().hasAll(['name', 'phone', 'requirement', 'createdAt']) &&
+        data.keys().hasOnly(['id', 'name', 'phone', 'occasion', 'requirement', 'preferredDate', 'message', 'source', 'status', 'createdAt']) &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+        data.phone is string && data.phone.size() >= 5 && data.phone.size() <= 25 &&
+        data.requirement is string && data.requirement.size() >= 1 && data.requirement.size() <= 1000 &&
+        data.createdAt is string && data.createdAt.size() <= 50 &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('occasion' in data) || (data.occasion is string && data.occasion.size() <= 100)) &&
+        (!('preferredDate' in data) || (data.preferredDate is string && data.preferredDate.size() <= 50)) &&
+        (!('message' in data) || (data.message is string && data.message.size() <= 2000)) &&
+        (!('source' in data) || (data.source is string && data.source in ['contact_form', 'custom_cake_planner', 'quick_enquiry'])) &&
+        (!('status' in data) || (data.status is string && data.status in ['pending', 'contacted', 'confirmed', 'completed']));
+    }
+
+    // Validation helper for Custom Cake Requests
+    function isValidCustomCakeRequest(data) {
+      return data.keys().hasAll(['occasion', 'size', 'flavor', 'createdAt']) &&
+        data.keys().hasOnly(['id', 'occasion', 'size', 'flavor', 'deliveryDate', 'customTheme', 'customerName', 'customerPhone', 'status', 'createdAt']) &&
+        data.occasion is string && data.occasion.size() >= 1 && data.occasion.size() <= 100 &&
+        data.size is string && data.size.size() >= 1 && data.size.size() <= 100 &&
+        data.flavor is string && data.flavor.size() >= 1 && data.flavor.size() <= 100 &&
+        data.createdAt is string && data.createdAt.size() <= 50 &&
+        (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
+        (!('deliveryDate' in data) || (data.deliveryDate is string && data.deliveryDate.size() <= 50)) &&
+        (!('customTheme' in data) || (data.customTheme is string && data.customTheme.size() <= 1000)) &&
+        (!('customerName' in data) || (data.customerName is string && data.customerName.size() <= 100)) &&
+        (!('customerPhone' in data) || (data.customerPhone is string && data.customerPhone.size() <= 25)) &&
+        (!('status' in data) || (data.status is string && data.status in ['new', 'quote_sent', 'in_baking', 'completed']));
+    }
+
+    // Connection test document
+    match /test/connection {
+      allow get: if true;
+    }
+
+    // Admin accounts collection
+    match /admins/{adminId} {
+      allow get: if isSignedIn() && request.auth.uid == adminId;
+      allow write: if false;
+    }
+
+    // Customer Enquiries
+    match /enquiries/{enquiryId} {
+      allow create: if isValidId(enquiryId) && isValidEnquiry(incoming());
+      allow get, list, delete: if isAdmin();
+      allow update: if isValidEnquiry(incoming()) && isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status']);
+    }
+
+    // Custom Cake Planner Requests
+    match /custom_cake_requests/{requestId} {
+      allow create: if isValidId(requestId) && isValidCustomCakeRequest(incoming());
+      allow get, list, delete: if isAdmin();
+      allow update: if isValidCustomCakeRequest(incoming()) && isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status']);
+    }
+  }
+}
